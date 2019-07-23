@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.156
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientUI", "ClientUI\ClientUI.csproj", "{FE43A59A-76B5-4B6F-87F5-A8EB4A4CF4F2}"
 EndProject
@@ -23,7 +23,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SalesBC", "SalesBC", "{D78C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShippingBC", "ShippingBC", "{DF0E1D2B-23EF-476B-8800-CB021053A813}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shipping.Events", "Shipping.Events\Shipping.Events.csproj", "{CCA7F54B-BEFB-49F6-8C43-B2287FA21BAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipping.Events", "Shipping.Events\Shipping.Events.csproj", "{CCA7F54B-BEFB-49F6-8C43-B2287FA21BAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContractTester.Tests", "ContractTester.Tests\ContractTester.Tests.csproj", "{B2B0F66B-D25E-4E00-B815-37E77ED6D504}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{CCA7F54B-BEFB-49F6-8C43-B2287FA21BAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCA7F54B-BEFB-49F6-8C43-B2287FA21BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCA7F54B-BEFB-49F6-8C43-B2287FA21BAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2B0F66B-D25E-4E00-B815-37E77ED6D504}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2B0F66B-D25E-4E00-B815-37E77ED6D504}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2B0F66B-D25E-4E00-B815-37E77ED6D504}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2B0F66B-D25E-4E00-B815-37E77ED6D504}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
