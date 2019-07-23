@@ -28,7 +28,7 @@ namespace ContractTester.Tests.SalesBC
             var placeOrderMessage = new PlaceOrderContract
             {
                 ContractId = Guid.Parse(ValidPlaceOrderContractId),
-                Message = new PlaceOrderMessage
+                Message = new MessageDetails
                 {
                     Id = Guid.NewGuid(),
                     ItemName = placeOrder.ItemName,
@@ -58,7 +58,7 @@ namespace ContractTester.Tests.SalesBC
             var placeOrderMessage = new PlaceOrderContract
             {
                 ContractId = Guid.Parse(ValidPlaceOrderContractId),
-                Message = new PlaceOrderMessage
+                Message = new MessageDetails
                 {
                     Id = null,
                     ItemName = placeOrder.ItemName,
@@ -92,9 +92,9 @@ namespace ContractTester.Tests.SalesBC
             var placeOrderMessage = new PlaceOrderContract
             {
                 ContractId = invalidGuid,
-                Message = new PlaceOrderMessage
+                Message = new MessageDetails
                 {
-                    Id = null,
+                    Id = Guid.NewGuid(),
                     ItemName = placeOrder.ItemName,
                     OrderDate = placeOrder.OrderDate,
                     OrderId = placeOrder.OrderId,
@@ -110,20 +110,58 @@ namespace ContractTester.Tests.SalesBC
             var responseString = await response.Content.ReadAsStringAsync();
             responseString.ShouldContain("Unable to test message; confirm that your request message is valid JSON.");
         }
+
+        [Fact]
+        public async Task ShouldReturnBadRequestForInvalidPropertyForContract()
+        {
+            var placeOrder = new PlaceOrder
+            {
+                OrderId = "901jki",
+                ItemName = "Cutting board",
+                OrderDate = DateTime.Now
+            };
+
+            var placeOrderMessage = new PlaceOrderContract
+            {
+                ContractId = Guid.Parse(ValidPlaceOrderContractId),
+                Message = new InvalidMessageDetails
+                {
+                    Id = Guid.NewGuid(),
+                    ItemName = placeOrder.ItemName,
+                    OrderDate = placeOrder.OrderDate,
+                    OrderId = placeOrder.OrderId,
+                    Timestamp = DateTime.Now,
+                    InvalidField = "this should error out"
+                }
+            };
+
+            var stringContent = new StringContent(JsonConvert.SerializeObject(placeOrderMessage), Encoding.UTF8, "application/json");
+
+            var response = await Client.PostAsync("https://localhost:5001/api/TestMessage", stringContent);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            var responseString = await response.Content.ReadAsStringAsync();
+            responseString.ShouldContain("Message property \\\"InvalidField\\\" is not part of the contract.");
+        }
     }
 
     public class PlaceOrderContract
     {
         public Guid ContractId { get; set; }
-        public PlaceOrderMessage Message { get; set; }
+        public MessageDetails Message { get; set; }
     }
 
-    public class PlaceOrderMessage
+    public class MessageDetails
     {
         public Guid? Id { get; set; }
         public string ItemName { get; set; }
         public DateTime OrderDate { get; set; }
         public string OrderId { get; set; }
         public DateTime Timestamp { get; set; }
+    }
+
+    public class InvalidMessageDetails : MessageDetails
+    {
+        public string InvalidField { get; set; }
     }
 }
