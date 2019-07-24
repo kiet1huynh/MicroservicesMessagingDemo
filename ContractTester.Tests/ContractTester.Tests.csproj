@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ClientUI\ClientUI.csproj" />
     <ProjectReference Include="..\Messages\Sales.Messages.csproj" />
+    <ProjectReference Include="..\Sales.Events\Sales.Events.csproj" />
   </ItemGroup>
 
   <ItemGroup>
