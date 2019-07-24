@@ -35,7 +35,7 @@ namespace ContractTester.Tests.SalesBC
             var placeOrderMessage = new PlaceOrderContract
             {
                 ContractId = Guid.Parse(_contractTesterSettings.ValidPlaceOrderContractId),
-                Message = new MessageDetails
+                Message = new PlaceOrderMessageDetails
                 {
                     Id = Guid.NewGuid(),
                     ItemName = placeOrder.ItemName,
@@ -64,7 +64,7 @@ namespace ContractTester.Tests.SalesBC
             var placeOrderMessage = new PlaceOrderContract
             {
                 ContractId = Guid.Parse(_contractTesterSettings.ValidPlaceOrderContractId),
-                Message = new MessageDetails
+                Message = new PlaceOrderMessageDetails
                 {
                     Id = null,
                     ItemName = placeOrder.ItemName,
@@ -97,7 +97,7 @@ namespace ContractTester.Tests.SalesBC
             var placeOrderMessage = new PlaceOrderContract
             {
                 ContractId = invalidGuid,
-                Message = new MessageDetails
+                Message = new PlaceOrderMessageDetails
                 {
                     Id = Guid.NewGuid(),
                     ItemName = placeOrder.ItemName,
@@ -131,9 +131,6 @@ namespace ContractTester.Tests.SalesBC
                 Message = new MessageDetailsWithAdditionalField
                 {
                     Id = Guid.NewGuid(),
-                    ItemName = placeOrder.ItemName,
-                    OrderDate = placeOrder.OrderDate,
-                    OrderId = placeOrder.OrderId,
                     Timestamp = DateTime.Now,
                     InvalidField = "this should error out"
                 }
@@ -148,13 +145,13 @@ namespace ContractTester.Tests.SalesBC
         }
     }
 
-    public class PlaceOrderContract
+    public class PlaceOrderContract : IContractTesterTemplate
     {
         public Guid ContractId { get; set; }
-        public MessageDetails Message { get; set; }
+        public IMessageDetails Message { get; set; }
     }
 
-    public class MessageDetails
+    public class PlaceOrderMessageDetails : IMessageDetails
     {
         public Guid? Id { get; set; }
         public string ItemName { get; set; }
@@ -163,8 +160,10 @@ namespace ContractTester.Tests.SalesBC
         public DateTime Timestamp { get; set; }
     }
 
-    public class MessageDetailsWithAdditionalField : MessageDetails
+    public class MessageDetailsWithAdditionalField : IMessageDetails
     {
         public string InvalidField { get; set; }
+        public Guid? Id { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }
