@@ -10,10 +10,17 @@ using Xunit;
 
 namespace ContractTester.Tests.SalesBC
 {
+    using static Testing;
+
     public class PlaceOrderTests
     {
         public static HttpClient Client = new HttpClient();
-        public const string ValidPlaceOrderContractId = "DFBF39EA-62A1-4C51-78F7-08D70F8D1BDD";
+        private readonly ContractTesterSettings _contractTesterSettings;
+
+        public PlaceOrderTests()
+        {
+            _contractTesterSettings = GetContractTesterApplicationConfigurationSettings();
+        }
 
         [Fact]
         public async Task ShouldReturnSuccessForValidContract()
@@ -27,7 +34,7 @@ namespace ContractTester.Tests.SalesBC
 
             var placeOrderMessage = new PlaceOrderContract
             {
-                ContractId = Guid.Parse(ValidPlaceOrderContractId),
+                ContractId = Guid.Parse(_contractTesterSettings.ValidPlaceOrderContractId),
                 Message = new MessageDetails
                 {
                     Id = Guid.NewGuid(),
@@ -39,8 +46,7 @@ namespace ContractTester.Tests.SalesBC
             };
 
             var stringContent = new StringContent(JsonConvert.SerializeObject(placeOrderMessage), Encoding.UTF8, "application/json");
-
-            var response = await Client.PostAsync("https://localhost:5001/api/TestMessage", stringContent);
+            var response = await Client.PostAsync(_contractTesterSettings.TestMessageApiUrl, stringContent);
 
             response.EnsureSuccessStatusCode();
         }
@@ -57,7 +63,7 @@ namespace ContractTester.Tests.SalesBC
 
             var placeOrderMessage = new PlaceOrderContract
             {
-                ContractId = Guid.Parse(ValidPlaceOrderContractId),
+                ContractId = Guid.Parse(_contractTesterSettings.ValidPlaceOrderContractId),
                 Message = new MessageDetails
                 {
                     Id = null,
@@ -69,10 +75,9 @@ namespace ContractTester.Tests.SalesBC
             };
 
             var stringContent = new StringContent(JsonConvert.SerializeObject(placeOrderMessage), Encoding.UTF8, "application/json");
-
-            var response = await Client.PostAsync("https://localhost:5001/api/TestMessage", stringContent);
-
+            var response = await Client.PostAsync(_contractTesterSettings.TestMessageApiUrl, stringContent);
             response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+
             var responseString = await response.Content.ReadAsStringAsync();
             responseString.ShouldContain("Message does not match contract");
         }
@@ -103,10 +108,9 @@ namespace ContractTester.Tests.SalesBC
             };
 
             var stringContent = new StringContent(JsonConvert.SerializeObject(placeOrderMessage), Encoding.UTF8, "application/json");
-
-            var response = await Client.PostAsync("https://localhost:5001/api/TestMessage", stringContent);
-
+            var response = await Client.PostAsync(_contractTesterSettings.TestMessageApiUrl, stringContent);
             response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+
             var responseString = await response.Content.ReadAsStringAsync();
             responseString.ShouldContain("Unable to test message; confirm that your request message is valid JSON.");
         }
@@ -123,8 +127,8 @@ namespace ContractTester.Tests.SalesBC
 
             var placeOrderMessage = new PlaceOrderContract
             {
-                ContractId = Guid.Parse(ValidPlaceOrderContractId),
-                Message = new InvalidMessageDetails
+                ContractId = Guid.Parse(_contractTesterSettings.ValidPlaceOrderContractId),
+                Message = new MessageDetailsWithAdditionalField
                 {
                     Id = Guid.NewGuid(),
                     ItemName = placeOrder.ItemName,
@@ -136,10 +140,9 @@ namespace ContractTester.Tests.SalesBC
             };
 
             var stringContent = new StringContent(JsonConvert.SerializeObject(placeOrderMessage), Encoding.UTF8, "application/json");
-
-            var response = await Client.PostAsync("https://localhost:5001/api/TestMessage", stringContent);
-
+            var response = await Client.PostAsync(_contractTesterSettings.TestMessageApiUrl, stringContent);
             response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+
             var responseString = await response.Content.ReadAsStringAsync();
             responseString.ShouldContain("Message property \\\"InvalidField\\\" is not part of the contract.");
         }
@@ -160,7 +163,7 @@ namespace ContractTester.Tests.SalesBC
         public DateTime Timestamp { get; set; }
     }
 
-    public class InvalidMessageDetails : MessageDetails
+    public class MessageDetailsWithAdditionalField : MessageDetails
     {
         public string InvalidField { get; set; }
     }
